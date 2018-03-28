@@ -72,7 +72,7 @@
     NSArray* ipinfo = [self getWiFiIP];
     NSString* ipaddr = ipinfo[0];
     NSString* ipsubnet = ipinfo[1];
-    
+
     if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsMultipart:@[ipaddr, ipsubnet]];
     } else {
@@ -88,7 +88,7 @@
     NSArray *ipinfo = [self getCarrierIP];
     NSString *ipaddr = ipinfo[0];
     NSString *ipsubnet = ipinfo[1];
-    
+
     if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsMultipart:@[ipaddr, ipsubnet]];
     } else {
@@ -98,5 +98,24 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-@end
+- (void) getIPAddress:(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = nil;
+    NSArray* ipinfo = [self getWiFiIP];
+    NSString* ipaddr = ipinfo[0];
 
+    if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:ipaddr];
+    } else {
+        ipinfo = [self getCarrierIP];
+        NSString* ipaddr = ipinfo[0];
+        if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
+          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:ipaddr];
+        } else {
+          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No valid IP address identified"];
+        }
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+@end
